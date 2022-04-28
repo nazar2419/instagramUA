@@ -3,6 +3,9 @@ module.exports = {
     "./src/**/*.{js,jsx,ts,tsx}",
   ],
   theme: {
+    fill: (theme) => ({
+      red: theme('color.red.primary')
+    }),
     colors: {
       while: '#ffffff',
       blue: {
