@@ -1,12 +1,16 @@
 import { useContext } from "react";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import FirebaseContext from "../context/firebase";
 import UserContext from "../context/user";
 import * as ROUTES from  "../constants/routes";
+import { DEFAULT_IMAGE_PATH } from '../constants/paths';
+import useUser from '../hooks/use-user';
 
 export default function Header() {
   const { firebase } = useContext(FirebaseContext);
-  const { user } = useContext(UserContext);
+  const { user: loggedInUser } = useContext(UserContext);
+  const { user } = useUser(loggedInUser?.uid);
+  const navigate = useNavigate();
 
   return (
     <header className="h-16 bg-white border-b border-gray-primary mb-8">
@@ -44,6 +48,7 @@ export default function Header() {
                   onKeyDown={(event) => {
                     if (event.key === 'Enter') {
                       firebase.auth().signOut();
+                      navigate(ROUTES.LOGIN);
                     }
                   }}
                 >
@@ -60,15 +65,19 @@ export default function Header() {
                       01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1" />
                   </svg>
                 </button>
-                <div className="flex items-center cursor-pointer">
-                  <Link to={`/p/${user.displayName}`}>
+                { user && ( <div className="flex items-center cursor-pointer">
+                  <Link to={`/p/${user?.username}`}>
                     <img
                       className="rounded-full h-8 w-8 flex"
-                      src={`images/avatars/${user.displayName}.jpg`}
-                      alt={`${user.displayName} profile`} 
+                      src={`/images/avatars/${user?.username}.jpg`}
+                      alt={`${user.username} profile`} 
+                      onError={(e) => {
+                        e.target.src = DEFAULT_IMAGE_PATH;
+                      }}
                     />
                   </Link>
                 </div>
+            )}
               </>
             ) : (
               <>
