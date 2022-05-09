@@ -128,7 +128,7 @@ export async function isUserFollowingProfile(loggedInUserUsername, profileUserId
       docId: item.id
     }));
 
-    return response.userId
+    return response.userId;
 }
 
 export async function toggleFollow(
